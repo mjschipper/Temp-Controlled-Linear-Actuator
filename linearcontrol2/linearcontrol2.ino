@@ -1,20 +1,18 @@
 #include <Wire.h>
-#include <SHT31.h> // https://github.com/RobTillaart/SHT85
+#include <SHT31.h> // https://github.com/RobTillaart/SHT31
 #include <timeObj.h> // https://github.com/leftCoast/LC_baseTools
 
 #define RELAY1_PIN 6  //relay 1 pin to activate coil
 #define RELAY2_PIN 7  //relay 2 pin to activate coil
+#define SHT31_ADDRESS   0x44
 
 uint32_t start;
 uint32_t stop;
 
 SHT31 sht;
 
-float temp;      // Values for heat and tempature.
-
 int open_door_temp = 29.5;
 int close_door_temp = 27.5;
-              
 bool        relay1State;
 bool        relay2State;
 timeObj     relayTimer(4300);  // Its in miliseconds. 1000 ms = a second, 60 seconds = minute 5 minutes..
@@ -22,17 +20,18 @@ timeObj     loopTimer(1000);        // I guess you want the loop slowed down?
 
 void setup(void) {
    
-   // Coms up first..
-  Serial.begin(9600);
-  Wire.begin();
+   Serial.begin(115200);
+   Serial.println(__FILE__);
+   Serial.print("SHT31_LIB_VERSION: \t");
+   Serial.println(SHT31_LIB_VERSION);
 
-  // Sensors fired up..
-  sht.begin(0x44);    //SHT31 I2C Address
+   Wire.begin();
+   sht.begin(SHT31_ADDRESS);
+   Wire.setClock(100000);
 
-  Wire.setClock(100000);
-  //uint16_t stat = sht.readStatus();
-  //Serial.print(stat, HEX);
-  //Serial.println();
+   uint16_t stat = sht.readStatus();
+   Serial.print(stat, HEX);
+   Serial.println();
 
    // Relay setup and shut off..
    pinMode(RELAY1_PIN, OUTPUT);
@@ -74,12 +73,15 @@ void switchRelay2(bool onOff) {
 
 
 void loop(void) {
-  sht.read();
-  temp = sht.getTemperature();
+   sht.read();
+   float temp = sht.getTemperature(); // Values for heat and tempature.
   
-  // Serial.print is useful if you are using serial monitor on PC and is not required for this code to work 
-  Serial.print("Temperature:");
-  Serial.print(temp, 1);
+   // Serial.print is useful if you are using serial monitor on PC and is not required for this code to work 
+   Serial.print("\t");
+   Serial.print(temp, 1);
+   Serial.print("\t");
+   Serial.println(temp, 1);
+   delay(100);
 
    if (loopTimer.ding()) {                               // If the loop timer has expired..
       if (!relay1State && !relay2State) {                 // If the fan's off..
