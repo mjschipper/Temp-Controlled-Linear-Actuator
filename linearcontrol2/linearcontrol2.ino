@@ -55,7 +55,9 @@ void switchRelay(bool onOff, char relay_pin) {
    } else {                            // Else, we want it off..
       digitalWrite(relay_pin, HIGH);   // shut it down.
    }
-   relay1State = onOff;                 // The relay state is now what they asked for.
+   
+   bool relayState = onOff;                 // The relay state is now what they asked for.
+   return relayState;
 }
 
 
@@ -73,15 +75,15 @@ void loop(void) {
    if (loopTimer.ding()) {                               // If the loop timer has expired..
       if (!relay1State && !relay2State) {                 // If the fan's off..
          if (temp > open_door_temp) {                    // And we are past our temp..
-            switchRelay(true, RELAY1_PIN);                           // On with the fan!
+            relay1State = switchRelay(true, RELAY1_PIN);                           // On with the fan!
          } else if (temp <= open_door_temp) {
-            switchRelay(true, RELAY2_PIN);
+            relay2State = switchRelay(true, RELAY2_PIN);
          }
       } else if (relayTimer.ding()) {                    // Else, if the fan IS running, and the timer has expired..
          if (temp > open_door_temp) {                   // And the room has reached ambiant..
-            switchRelay(false, RELAY1_PIN);                          // Off with the fan!
+            relay1State = switchRelay(false, RELAY1_PIN);                          // Off with the fan!
          } else if (temp <= open_door_temp) {
-            switchRelay(false, RELAY2_PIN);
+            relay2State = switchRelay(false, RELAY2_PIN);
          }
       }
       
