@@ -75,11 +75,11 @@ void loop(void) {
          if (temp > open_door_temp) {                    // And we are past our temp..
             switchRelay(true, RELAY1_PIN);                           // On with the fan!
          } else if (temp <= open_door_temp) {
-            switchRelay(false, RELAY2_PIN);
+            switchRelay(true, RELAY2_PIN);
          }
       } else if (relayTimer.ding()) {                    // Else, if the fan IS running, and the timer has expired..
          if (temp > open_door_temp) {                   // And the room has reached ambiant..
-            switchRelay(true, RELAY1_PIN);                          // Off with the fan!
+            switchRelay(false, RELAY1_PIN);                          // Off with the fan!
          } else if (temp <= open_door_temp) {
             switchRelay(false, RELAY2_PIN);
          }
