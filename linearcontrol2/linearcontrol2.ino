@@ -47,7 +47,7 @@ void setup(void) {
 
 
 // A function that turns the fan on and off.
-void switchRelay(bool onOff, char relay_pin) {
+bool switchRelay(bool onOff, char relay_pin) {
          
    if (onOff) {                        // If we want the relay on..
       digitalWrite(relay_pin, LOW);    // Fire it up.
