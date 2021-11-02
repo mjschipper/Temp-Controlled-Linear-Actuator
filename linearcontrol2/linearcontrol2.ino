@@ -47,28 +47,15 @@ void setup(void) {
 
 
 // A function that turns the fan on and off.
-void switchRelay1(bool onOff) {
+void switchRelay(bool onOff, char relay_pin) {
          
    if (onOff) {                        // If we want the relay on..
-      digitalWrite(RELAY1_PIN, LOW);    // Fire it up.
+      digitalWrite(relay_pin, LOW);    // Fire it up.
       relayTimer.start();              // Start the timer.
    } else {                            // Else, we want it off..
-      digitalWrite(RELAY1_PIN, HIGH);   // shut it down.
+      digitalWrite(relay_pin, HIGH);   // shut it down.
    }
    relay1State = onOff;                 // The relay state is now what they asked for.
-}
-
-
-// A function that turns the fan on and off.
-void switchRelay2(bool onOff) {
-         
-   if (onOff) {                        // If we want the relay on..
-      digitalWrite(RELAY2_PIN, LOW);    // Fire it up.
-      relayTimer.start();              // Start the timer.
-   } else {                            // Else, we want it off..
-      digitalWrite(RELAY2_PIN, HIGH);   // shut it down.
-   }
-   relay2State = onOff;                 // The relay state is now what they asked for.
 }
 
 
@@ -86,15 +73,15 @@ void loop(void) {
    if (loopTimer.ding()) {                               // If the loop timer has expired..
       if (!relay1State && !relay2State) {                 // If the fan's off..
          if (temp > open_door_temp) {                    // And we are past our temp..
-            switchRelay1(true);                           // On with the fan!
+            switchRelay(true, RELAY1_PIN);                           // On with the fan!
          } else if (temp <= open_door_temp) {
-            switchRelay2(true);
+            switchRelay(false, RELAY2_PIN);
          }
       } else if (relayTimer.ding()) {                    // Else, if the fan IS running, and the timer has expired..
          if (temp > open_door_temp) {                   // And the room has reached ambiant..
-            switchRelay1(false);                          // Off with the fan!
+            switchRelay(true, RELAY1_PIN);                          // Off with the fan!
          } else if (temp <= open_door_temp) {
-            switchRelay2(false);
+            switchRelay(false, RELAY2_PIN);
          }
       }
       
