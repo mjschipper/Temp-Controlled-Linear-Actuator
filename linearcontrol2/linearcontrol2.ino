@@ -66,24 +66,26 @@ void loop(void) {
    float temp = sht.getTemperature(); // Values for heat and tempature.
   
    // Serial.print is useful if you are using serial monitor on PC and is not required for this code to work 
-   Serial.print("\t");
-   Serial.print(temp, 1);
-   Serial.print("\t");
-   Serial.println(temp, 1);
-   delay(100);
+   // Serial.print("\t");
+   // Serial.print(temp, 1);
+   // Serial.print("\t");
+   // Serial.println(temp, 1);
+   // delay(100);
 
-   if (loopTimer.ding()) {                               // If the loop timer has expired..
-      if (!relay1State && !relay2State) {                 // If the fan's off..
-         if (temp > open_door_temp) {                    // And we are past our temp..
-            relay1State = switchRelay(true, RELAY1_PIN);                           // On with the fan!
+   if (loopTimer.ding()) {                                 // If the loop timer has expired..
+      if (!relay1State && !relay2State) {                  // If the fan's off..
+         if (temp > open_door_temp) {                      // And we are past our temp..
+            relay1State = switchRelay(true, RELAY1_PIN);   // Open the actuator!
+			      relay2State = switchRelay(false, RELAY2_PIN);
          } else if (temp <= open_door_temp) {
-            relay2State = switchRelay(true, RELAY2_PIN);
+            relay1State = switchRelay(false, RELAY1_PIN);			 
+            relay2State = switchRelay(true, RELAY2_PIN);   // Close the actuator!
          }
-      } else if (relayTimer.ding()) {                    // Else, if the fan IS running, and the timer has expired..
-         if (temp > open_door_temp) {                   // And the room has reached ambiant..
-            relay1State = switchRelay(false, RELAY1_PIN);                          // Off with the fan!
+      } else if (relayTimer.ding()) {                      // Else, if the fan IS running, and the timer has expired..
+         if (temp > open_door_temp) {                      // And the room has reached ambiant..
+            relay1State = switchRelay(false, RELAY1_PIN);  // Off with the relay!
          } else if (temp <= open_door_temp) {
-            relay2State = switchRelay(false, RELAY2_PIN);
+            relay2State = switchRelay(false, RELAY2_PIN);  // Off with the relay!
          }
       }
       
