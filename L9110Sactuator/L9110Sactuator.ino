@@ -10,13 +10,14 @@ uint32_t stop;
 
 SHT31 sht;
 
-int open_door_temp = 29.5;
-int close_door_temp = 27.5;
+int open_door_temp = 30;
+int close_door_temp = 28;
 bool        a1aState;
 bool        a2aState;
+float        tempReached;
 unsigned long tempReachedMillis; // when temp was reached
 unsigned long actuatorTurnedOnAt; // when actuator was turned on
-unsigned long turnOffDelay = 4500; // turn off LED after this
+unsigned long turnOffDelay = 5000; // turn off actuator after this
 
 void setup(void) {
    
@@ -64,26 +65,30 @@ void loop(void) {
 	float temp = sht.getTemperature(); // Values for heat and tempature.
   
    // Serial.print is useful if you are using serial monitor on PC and is not required for this code to work 
-   // Serial.print("\t");
-   // Serial.print(temp, 1);
-   // Serial.print("\t");
-   // Serial.print(a1aState, 1);
-   // Serial.print("\t");
-   // Serial.println(a2aState, 1);
+    //Serial.print("\t");
+    //Serial.print(temp, 1);
+    //Serial.print("\t");
+    //Serial.print(a1aState, 1);
+    //Serial.print("\t");
+    //Serial.print(tempReached, 1);
+    //Serial.print("\t");
+    //Serial.println(a2aState, 1);
 
-	if (!a2aState && temp > open_door_temp) {
+	if (tempReached <= open_door_temp && temp > open_door_temp) {
 		tempReachedMillis = currentMillis;
 		a1aState = switchL9110(true, a1a_PIN);   // Open the actuator!
 		a2aState = switchL9110(false, a2a_PIN);
+		tempReached = temp;
 		if (a1aState) {
 			actuatorTurnedOnAt = currentMillis;
 		}
 	}
 	
-	if (!a1aState && temp <= close_door_temp) {
+	if (tempReached > close_door_temp && temp <= close_door_temp) {
 		tempReachedMillis = currentMillis;
 		a1aState = switchL9110(false, a1a_PIN);			 
 		a2aState = switchL9110(true, a2a_PIN);   // Close the actuator!
+		tempReached = temp;
 		if (a2aState) {
 			actuatorTurnedOnAt = currentMillis;
 		}
