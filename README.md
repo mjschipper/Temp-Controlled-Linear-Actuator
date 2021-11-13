@@ -1,5 +1,5 @@
-<p># Temp-Controlled-Linear-Actuator
- Arduino SHT31d Temperature Controlled Linear Actuator</p>
+<h1># Temp-Controlled-Linear-Actuator<br>
+ Arduino SHT31d Temperature Controlled Linear Actuator</h1>
 
 <ol>
  <li>1x Arduino Pro Mini 3v3 [https://www.aliexpress.com/item/1005001621723982.html]</li>
@@ -9,5 +9,5 @@
  <li>1x 12V Micro Linear Actuator 30mm 7MMS 128N [https://www.aliexpress.com/item/1005001427208855.html]</li>
  <li>1x 12v 1amp power supply</li>
  </ol>
-<br>
+ 
 You will also need an Arduino USB programmer of your choice to upload code.<br>
