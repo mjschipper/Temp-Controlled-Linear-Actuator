@@ -20,5 +20,5 @@ You will also need an Arduino USB programmer of your choice to upload code.<br>
 <li>Use I2C for SHT31d temp sensor (VCC, GND, Pin A4, and Pin A5 on Pro Mini)</li>
 <li>Wire 12v to Pro Mini (Pin RAW and GND)</li>
 <li>Wire 12v to L9110S VCC, GND Pins</li>
-<li>Wire Actuator to L9110 output 1A (you may need to experiment with wire direction based on actuator)</li>
+<li>Wire Actuator to L9110 output 'Motor 1' pins (you may need to experiment with wire direction based on actuator)</li>
 </ol>
