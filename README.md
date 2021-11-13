@@ -13,7 +13,7 @@
  <li>1x 12v 1amp power supply</li>
  </ol>
 
-**12c 5v converter may not be require if your Pro Mini supports 12v input, check your specs.
+**12v-5v converter may not be require if your Pro Mini supports 12v input, check your specs.
 
 You will also need an Arduino USB programmer of your choice to upload code.<br>
 
