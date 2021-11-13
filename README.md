@@ -13,10 +13,9 @@
 You will also need an Arduino USB programmer of your choice to upload code.<br>
 
 <ol>
-<li>Use 2x digital pins for L9110S, i used Pin 6 and 7.</li>
-<li>Use i2c for SHT31d temp sensor (VCC, GND, Pin A4, and Pin A5)</li>
+<li>I used Pin 6 and 7 on the Pro Mini to Control the L9110. Wire Pro Mini Pin 6 to A-1A on L9110, Wire Pin 7 to A-1B on L9110</li>
+<li>Use I2C for SHT31d temp sensor (VCC, GND, Pin A4, and Pin A5 on Pro Mini)</li>
 <li>Wire 12v to DSN-Mini-360 input and adjust output to 5v. Connect output to Pro Mini (Pin RAW and GND)</li>
 <li>Wire 12v to L9110S VCC, GND Pins</li>
-<li>Wire Pro Mini Pin 6 to A-1A on L9110, Wire Pin 7 to A-1B on L9110</li>
 <li>Wire Actuator to L9110 output 1A (you may need to experiment with wire direction based on actuator)</li>
 </ol>
