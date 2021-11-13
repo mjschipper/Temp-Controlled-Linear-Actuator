@@ -2,7 +2,7 @@
 #include <SHT31.h> // https://github.com/RobTillaart/SHT31
 
 #define a1a_PIN 6  //a1a pin to L9110
-#define a2a_PIN 7  //a2a pin to L9110
+#define a1b_PIN 7  //a1b pin to L9110
 #define SHT31_ADDRESS   0x44
 
 uint32_t start;
@@ -13,11 +13,11 @@ SHT31 sht;
 int open_door_temp = 30;
 int close_door_temp = 28;
 bool        a1aState;
-bool        a2aState;
+bool        a1bState;
 float        tempReached;
 unsigned long tempReachedMillis; // when temp was reached
 unsigned long actuatorTurnedOnAt; // when actuator was turned on
-unsigned long turnOffDelay = 5000; // turn off actuator after this. Based on a 7mm/s actuator it should take 4.3secs to open/close.
+unsigned long turnOffDelay = 5000; // turn off actuator after this. Based on a 30mm, 7mm/s actuator it should take 4.3secs to open/close.
 
 void setup(void) {
    
@@ -36,11 +36,11 @@ void setup(void) {
 
    // L9110 setup and shut off..
    pinMode(a1a_PIN, OUTPUT);
-   pinMode(a2a_PIN, OUTPUT);   
+   pinMode(a1b_PIN, OUTPUT);   
    digitalWrite(a1a_PIN, HIGH);
-   digitalWrite(a2a_PIN, HIGH);  
+   digitalWrite(a1b_PIN, HIGH);  
    a1aState = true;              // L9110, actuator closed
-   a2aState = false;              // L9110, actuator open
+   a1bState = false;              // L9110, actuator open
 }
 
 
@@ -72,12 +72,12 @@ void loop(void) {
 	// Serial.print("\t");
 	// Serial.print(tempReached, 1);
 	// Serial.print("\t");
-	// Serial.println(a2aState, 1);
+	// Serial.println(a1bState, 1);
 
 	if (tempReached <= open_door_temp && temp > open_door_temp) {
 		tempReachedMillis = currentMillis;
 		a1aState = switchL9110(true, a1a_PIN);   // Open the actuator!
-		a2aState = switchL9110(false, a2a_PIN);
+		a1bState = switchL9110(false, a1b_PIN);
 		tempReached = temp;
 		if (a1aState) {
 			actuatorTurnedOnAt = currentMillis;    // start the timer.
@@ -87,9 +87,9 @@ void loop(void) {
 	if (tempReached > close_door_temp && temp <= close_door_temp) {
 		tempReachedMillis = currentMillis;
 		a1aState = switchL9110(false, a1a_PIN);			 
-		a2aState = switchL9110(true, a2a_PIN);   // Close the actuator!
+		a1bState = switchL9110(true, a1b_PIN);   // Close the actuator!
 		tempReached = temp;
-		if (a2aState) {
+		if (a1bState) {
 			actuatorTurnedOnAt = currentMillis;    // start the timer.
 		}
 	}
@@ -102,11 +102,11 @@ void loop(void) {
 		}
 	}
 	
-	if (a2aState) {
+	if (a1bState) {
 		// okay, actuator on, check for how long
 		if ((unsigned long)(currentMillis - actuatorTurnedOnAt) >= turnOffDelay) {
-			a2aState = false;
-			digitalWrite(a2a_PIN, HIGH);   // shut it down.
+			a1bState = false;
+			digitalWrite(a1b_PIN, HIGH);   // shut it down.
 		}
 	}
 }
