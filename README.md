@@ -1,8 +1,9 @@
 <h1># Temp-Controlled-Linear-Actuator<br>
  Arduino SHT31d Temperature Controlled Linear Actuator</h1>
  
-<h2>Actuator uses a L9110 to control a micro linear actuator on 12v. I set a 5 sec off delay to save the actuator between temp changes. Temp in code is 30 degrees celcius open/ 28 degrees celcius close. I use this in conjunction with a fan to circulate air in my home communications cupboard, the actuator opens/closes the cupboard door a few centimetres when it gets too hot.</h2>
+<h3>The linear actuator uses a L9110 to control a micro linear actuator on 12v. I set a 5 sec off delay to save the actuator between temp changes. Temp in code is 30 degrees celcius open/ 28 degrees celcius close. I use this in conjunction with a fan to circulate air in my home communications cupboard, the actuator opens/closes the cupboard door a few centimetres when it gets too hot.</h3>
 
+<b>Required Parts:</b><br>
 <ol>
  <li>1x Arduino Pro Mini 3v3 [https://www.aliexpress.com/item/1005001621723982.html]</li>
  <li>1x SHT31d Sensor [https://www.aliexpress.com/item/32678741657.html]</li>
@@ -14,6 +15,7 @@
  
 You will also need an Arduino USB programmer of your choice to upload code.<br>
 
+<b>Assembly:</b><br>
 <ol>
 <li>I used Pin 6 and 7 on the Pro Mini to Control the L9110. Wire Pro Mini Pin 6 to A-1A on L9110, Wire Pin 7 to A-1B on L9110</li>
 <li>Use I2C for SHT31d temp sensor (VCC, GND, Pin A4, and Pin A5 on Pro Mini)</li>
