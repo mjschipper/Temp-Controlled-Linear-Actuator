@@ -17,7 +17,7 @@ bool        a2aState;
 float        tempReached;
 unsigned long tempReachedMillis; // when temp was reached
 unsigned long actuatorTurnedOnAt; // when actuator was turned on
-unsigned long turnOffDelay = 5000; // turn off actuator after this
+unsigned long turnOffDelay = 5000; // turn off actuator after this. Based on a 7mm/s actuator it should take 4.3secs to open/close.
 
 void setup(void) {
    
@@ -64,15 +64,15 @@ void loop(void) {
 	sht.read();
 	float temp = sht.getTemperature(); // Values for heat and tempature.
   
-   // Serial.print is useful if you are using serial monitor on PC and is not required for this code to work 
-    //Serial.print("\t");
-    //Serial.print(temp, 1);
-    //Serial.print("\t");
-    //Serial.print(a1aState, 1);
-    //Serial.print("\t");
-    //Serial.print(tempReached, 1);
-    //Serial.print("\t");
-    //Serial.println(a2aState, 1);
+	// Serial.print is useful if you are using serial monitor on PC and is not required for this code to work 
+	// Serial.print("\t");
+	// Serial.print(temp, 1);
+	// Serial.print("\t");
+	// Serial.print(a1aState, 1);
+	// Serial.print("\t");
+	// Serial.print(tempReached, 1);
+	// Serial.print("\t");
+	// Serial.println(a2aState, 1);
 
 	if (tempReached <= open_door_temp && temp > open_door_temp) {
 		tempReachedMillis = currentMillis;
@@ -80,7 +80,7 @@ void loop(void) {
 		a2aState = switchL9110(false, a2a_PIN);
 		tempReached = temp;
 		if (a1aState) {
-			actuatorTurnedOnAt = currentMillis;
+			actuatorTurnedOnAt = currentMillis;    // start the timer.
 		}
 	}
 	
@@ -90,23 +90,23 @@ void loop(void) {
 		a2aState = switchL9110(true, a2a_PIN);   // Close the actuator!
 		tempReached = temp;
 		if (a2aState) {
-			actuatorTurnedOnAt = currentMillis;
+			actuatorTurnedOnAt = currentMillis;    // start the timer.
 		}
 	}
 	
 	if (a1aState) {
-		// okay, led on, check for how long
+		// okay, actuator on, check for how long
 		if ((unsigned long)(currentMillis - actuatorTurnedOnAt) >= turnOffDelay) {
 			a1aState = false;
-			digitalWrite(a1a_PIN, HIGH);
+			digitalWrite(a1a_PIN, HIGH);   // shut it down.
 		}
 	}
 	
 	if (a2aState) {
-		// okay, led on, check for how long
+		// okay, actuator on, check for how long
 		if ((unsigned long)(currentMillis - actuatorTurnedOnAt) >= turnOffDelay) {
 			a2aState = false;
-			digitalWrite(a2a_PIN, HIGH);
+			digitalWrite(a2a_PIN, HIGH);   // shut it down.
 		}
 	}
 }
