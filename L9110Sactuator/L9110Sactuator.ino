@@ -12,9 +12,9 @@ SHT31 sht;
 
 int open_door_temp = 30;
 int close_door_temp = 28;
-bool        a1aState;
-bool        a1bState;
-float        tempReached;
+bool a1aState false;
+bool a1bState = false;
+float tempReached = 29; // set between your temp open and close thresholds otherwise issues will occur
 unsigned long tempReachedMillis; // when temp was reached
 unsigned long actuatorTurnedOnAt; // when actuator was turned on
 unsigned long turnOffDelay = 5000; // turn off actuator after this. Based on a 30mm, 7mm/s actuator it should take 4.3secs to open/close.
@@ -39,8 +39,6 @@ void setup(void) {
    pinMode(a1b_PIN, OUTPUT);   
    digitalWrite(a1a_PIN, HIGH);
    digitalWrite(a1b_PIN, HIGH);  
-   a1aState = true;              // L9110, actuator closed
-   a1bState = false;              // L9110, actuator open
 }
 
 
