@@ -12,7 +12,7 @@ SHT31 sht;
 
 int open_door_temp = 30;
 int close_door_temp = 28;
-bool a1aState false;
+bool a1aState = false;
 bool a1bState = false;
 float tempReached = 29; // set between your temp open and close thresholds otherwise issues will occur
 unsigned long tempReachedMillis; // when temp was reached
