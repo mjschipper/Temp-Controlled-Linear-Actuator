@@ -10,22 +10,18 @@ uint32_t stop;
 
 SHT31 sht;
 
-int open_door_temp = 30;
-int close_door_temp = 28;
+int open_door_temp = 31;
+int close_door_temp = 28.5;
 bool a1aState = false;
 bool a1bState = false;
 float tempReached = 29; // set between your temp open and close thresholds otherwise issues will occur
 unsigned long tempReachedMillis; // when temp was reached
 unsigned long actuatorTurnedOnAt; // when actuator was turned on
-unsigned long turnOffDelay = 5000; // turn off actuator after this. Based on a 30mm, 7mm/s actuator it should take 4.3secs to open/close.
+unsigned long turnOffDelay = 4500; // turn off actuator after this. Based on a 30mm, 7mm/s actuator it should take 4.3secs to open/close.
 
 void setup(void) {
    
    Serial.begin(115200);
-   Serial.println(__FILE__);
-   Serial.print("SHT31_LIB_VERSION: \t");
-   Serial.println(SHT31_LIB_VERSION);
-
    Wire.begin();
    sht.begin(SHT31_ADDRESS);
    Wire.setClock(100000);
