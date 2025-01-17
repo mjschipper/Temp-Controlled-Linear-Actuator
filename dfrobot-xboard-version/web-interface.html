@@ -1,0 +1,194 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Temperature Control System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f0f2f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status-card {
+            background: #fff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .temp-display {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a73e8;
+        }
+        .fan-status {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        .fan-gauge {
+            width: 45%;
+            background: #f5f5f5;
+            border-radius: 4px;
+            padding: 10px;
+        }
+        .progress-bar {
+            height: 20px;
+            background: #e1e1e1;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #4CAF50;
+            transition: width 0.3s ease;
+        }
+        .actuator-status {
+            padding: 10px;
+            background: #e8f0fe;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .temp-history {
+            margin-top: 20px;
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Temperature Control System</h1>
+        <div class="status-card">
+            <h2>Current Temperature</h2>
+            <div class="temp-display">
+                <span id="currentTemp">--</span>°C
+                <div style="font-size: 14px; color: #666;">
+                    Estimated top: <span id="estimatedTopTemp">--</span>°C
+                </div>
+            </div>
+        </div>
+        
+        <div class="fan-status">
+            <div class="fan-gauge">
+                <h3>Exhaust Fan</h3>
+                <div class="progress-bar">
+                    <div id="exhaustFanBar" class="progress-fill" style="width: 0%"></div>
+                </div>
+                <div id="exhaustFanSpeed">0%</div>
+            </div>
+            
+            <div class="fan-gauge">
+                <h3>Intake Fan</h3>
+                <div class="progress-bar">
+                    <div id="intakeFanBar" class="progress-fill" style="width: 0%"></div>
+                </div>
+                <div id="intakeFanSpeed">0%</div>
+            </div>
+        </div>
+        
+        <div class="actuator-status">
+            <h3>Actuator Status</h3>
+            <div id="actuatorState">IDLE</div>
+        </div>
+        
+        <div class="temp-history">
+            <h3>Temperature History</h3>
+            <canvas id="tempChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let tempHistory = [];
+        
+        function updateStatus() {
+            fetch('/api/status')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('currentTemp').textContent = 
+                        data.temperature.toFixed(1);
+                    document.getElementById('estimatedTopTemp').textContent = 
+                        data.estimatedTopTemp.toFixed(1);
+                    
+                    document.getElementById('exhaustFanSpeed').textContent = 
+                        data.exhaustFanSpeed + '%';
+                    document.getElementById('exhaustFanBar').style.width = 
+                        data.exhaustFanSpeed + '%';
+                    
+                    document.getElementById('intakeFanSpeed').textContent = 
+                        data.intakeFanSpeed + '%';
+                    document.getElementById('intakeFanBar').style.width = 
+                        data.intakeFanSpeed + '%';
+                    
+                    document.getElementById('actuatorState').textContent = 
+                        data.actuatorState;
+                    
+                    // Add to history
+                    tempHistory.push({
+                        time: new Date(),
+                        temp: data.temperature
+                    });
+                    
+                    if (tempHistory.length > 60) { // Keep last 60 readings
+                        tempHistory.shift();
+                    }
+                    
+                    updateChart();
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        
+        function updateChart() {
+            const ctx = document.getElementById('tempChart').getContext('2d');
+            // Use a simple line drawing approach
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            
+            const width = ctx.canvas.width;
+            const height = ctx.canvas.height;
+            const padding = 20;
+            
+            // Draw axes
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.stroke();
+            
+            // Plot temperature points
+            if (tempHistory.length > 1) {
+                const xStep = (width - 2 * padding) / (tempHistory.length - 1);
+                const tempMin = Math.min(...tempHistory.map(t => t.temp));
+                const tempMax = Math.max(...tempHistory.map(t => t.temp));
+                const tempRange = tempMax - tempMin;
+                
+                ctx.beginPath();
+                ctx.strokeStyle = '#1a73e8';
+                tempHistory.forEach((point, i) => {
+                    const x = padding + i * xStep;
+                    const y = height - padding - 
+                        ((point.temp - tempMin) / tempRange) * (height - 2 * padding);
+                    
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                });
+                ctx.stroke();
+            }
+        }
+        
+        // Update every second
+        setInterval(updateStatus, 1000);
+        
+        // Initial update
+        updateStatus();
+    </script>
+</body>
+</html>
